@@ -1,0 +1,3 @@
+[submodule ".oh-my-zsh.git"]
+	path = .oh-my-zsh.git
+	url = git@github.com:manukall/oh-my-zsh.git
