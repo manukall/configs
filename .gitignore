@@ -1,0 +1,6 @@
+.*.swp
+tags
+.swo
+jferris-*.gemspec
+*.scratch.*
+tmp/tags/
