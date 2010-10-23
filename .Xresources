@@ -3,6 +3,6 @@ URxvt.background:       black
 URxvt.foreground:       white
 URxvt.cursorColor:      green
 URxvt.underlineColor:   yellow
-URxvt.font:             xft:Terminus:pixelsize=12:antialias=false
-URxvt.boldFont:         xft:Terminus:bold:pixelsize=14:antialias=false
+URxvt.font:             xft:Dina:pixelsize=12:antialias=false
+URxvt.boldFont:         xft:Dina:bold:pixelsize=14:antialias=false
 URxvt.perl-ext-common:  default
