@@ -6,6 +6,6 @@ trayer --edge top --align right --SetDockType true --SetPartialStrut true \
 xsetroot -solid midnightblue
 xsetroot -cursor_name left_ptr
 
-dropboxd &
+(sleep 30 && dropboxd) &
 
 xmonad
