@@ -5,6 +5,7 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Layout.ResizableTile
 import XMonad.Actions.CycleWS
+import XMonad.Actions.GridSelect
 import System.IO
 
 myManageHook = composeAll
@@ -36,4 +37,6 @@ main = do
         , ((mod4Mask .|. shiftMask, xK_Up), shiftPrevScreen >> prevScreen)
         , ((mod4Mask,               xK_Down), nextScreen)
         , ((mod4Mask .|. shiftMask, xK_Down), shiftNextScreen >> nextScreen)
+
+        , ((mod4Mask,               xK_g), goToSelected defaultGSConfig)
         ]
