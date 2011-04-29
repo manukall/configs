@@ -4,3 +4,6 @@ tags
 jferris-*.gemspec
 *.scratch.*
 tmp/tags/
+.rvmrc
+.bundle
+*.vim

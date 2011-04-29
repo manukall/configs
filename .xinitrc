@@ -1,11 +1,15 @@
 xrdb -load ~/.Xresources
 
-trayer --edge top --align right --SetDockType true --SetPartialStrut true \
---expand true --width 10 --transparent true --tint 0x191970 --height 12&
-
-xsetroot -solid midnightblue
-xsetroot -cursor_name left_ptr
-
 (sleep 30 && dropboxd) &
 
-xmonad
+urxvt &
+
+DEFAULT_SESSION=awesome
+case $1 in
+  awesome) exec awesome ;;
+  wmii) rvm ruby-1.9.2-p0@wmii exec wmii ;;
+  xmonad) 
+    xsetroot -cursor_name left_ptr;
+    xmonad ;;
+  *) exec $DEFAULT_SESSION ;;
+esac
