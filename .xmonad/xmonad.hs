@@ -14,6 +14,7 @@ myManageHook = composeAll
   ]
 
 myLayout = ResizableTall 1 (3/100) (1/2) []
+myWorkspaces    = ["1:main","2:work","3:web","4:chat","5:mail", "6", "7", "8", "9"]
 
 main = do
   xmproc <- spawnPipe "xmobar"
@@ -26,7 +27,10 @@ main = do
       }
     , modMask = mod4Mask
     , terminal = "urxvt"
-    , borderWidth = 3
+    , borderWidth = 2
+    , normalBorderColor = "#CCCCC6"
+    , focusedBorderColor = "#fd971f"
+    , workspaces = myWorkspaces
     }`additionalKeys`
         [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
         , ((mod4Mask,               xK_y), sendMessage MirrorExpand)
