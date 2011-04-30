@@ -2,6 +2,7 @@ import Data.Ratio ((%))
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.UrgencyHook
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Layout.ResizableTile
@@ -47,32 +48,34 @@ myWorkspaces    = ["1:main","2:work","3:web","4:skype","5:mail", "6:media", "7",
 
 main = do
   xmproc <- spawnPipe "xmobar"
-  xmonad $ defaultConfig
-    { manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
-    , layoutHook = myLayouts
-    , logHook = dynamicLogWithPP $ xmobarPP
-      { ppOutput = hPutStrLn xmproc
-      , ppTitle = xmobarColor "green" "" . shorten 50
-      }
-    , modMask = mod4Mask
-    , terminal = "urxvt"
-    , borderWidth = 2
-    , normalBorderColor = "#CCCCC6"
-    , focusedBorderColor = "#fd971f"
-    , workspaces = myWorkspaces
-    }`additionalKeys`
-        [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
-        , ((mod4Mask,               xK_y), sendMessage MirrorExpand)
-        , ((mod4Mask,               xK_Right), nextWS)
-        , ((mod4Mask .|. shiftMask, xK_Right), shiftToNext >> nextWS)
-        , ((mod4Mask,               xK_Left), prevWS)
-        , ((mod4Mask .|. shiftMask, xK_Left), shiftToPrev >> prevWS)
-        , ((mod4Mask,               xK_Up), prevScreen)
-        , ((mod4Mask .|. shiftMask, xK_Up), shiftPrevScreen >> prevScreen)
-        , ((mod4Mask,               xK_Down), nextScreen)
-        , ((mod4Mask .|. shiftMask, xK_Down), shiftNextScreen >> nextScreen)
+  xmonad $ withUrgencyHook NoUrgencyHook
+        $ defaultConfig
+          { manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
+          , layoutHook = myLayouts
+          , logHook = dynamicLogWithPP $ xmobarPP
+            { ppOutput = hPutStrLn xmproc
+            , ppTitle = xmobarColor "green" "" . shorten 50
+            , ppUrgent = xmobarColor "yellow" "red" . xmobarStrip
+            }
+          , modMask = mod4Mask
+          , terminal = "urxvt"
+          , borderWidth = 2
+          , normalBorderColor = "#CCCCC6"
+          , focusedBorderColor = "#fd971f"
+          , workspaces = myWorkspaces
+          }`additionalKeys`
+              [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
+              , ((mod4Mask,               xK_y), sendMessage MirrorExpand)
+              , ((mod4Mask,               xK_Right), nextWS)
+              , ((mod4Mask .|. shiftMask, xK_Right), shiftToNext >> nextWS)
+              , ((mod4Mask,               xK_Left), prevWS)
+              , ((mod4Mask .|. shiftMask, xK_Left), shiftToPrev >> prevWS)
+              , ((mod4Mask,               xK_Up), prevScreen)
+              , ((mod4Mask .|. shiftMask, xK_Up), shiftPrevScreen >> prevScreen)
+              , ((mod4Mask,               xK_Down), nextScreen)
+              , ((mod4Mask .|. shiftMask, xK_Down), shiftNextScreen >> nextScreen)
 
-        , ((mod4Mask,               xK_g), goToSelected defaultGSConfig)
+              , ((mod4Mask,               xK_g), goToSelected defaultGSConfig)
 
-        , ((mod4Mask,               xK_w), gotoMenu)
-        ]
+              , ((mod4Mask,               xK_w), gotoMenu)
+              ]
