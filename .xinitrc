@@ -14,7 +14,7 @@ case $1 in
     volwheel &
     setxkbmap de nodeadkeys;
     xrandr --output DP1 --mode 1920x1080 --left-of LVDS1 --primary;
-    feh --bg-center ~/.xmonad/wallpapers/xmonad.png;
+    feh --bg-center ~/.xmonad/wallpapers/swahili.png;
     xmonad ;;
   *) exec $DEFAULT_SESSION ;;
 esac

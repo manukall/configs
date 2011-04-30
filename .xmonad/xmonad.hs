@@ -54,14 +54,15 @@ main = do
           , layoutHook = myLayouts
           , logHook = dynamicLogWithPP $ xmobarPP
             { ppOutput = hPutStrLn xmproc
-            , ppTitle = xmobarColor "green" "" . shorten 50
-            , ppUrgent = xmobarColor "yellow" "red" . xmobarStrip
+            ,  ppCurrent = xmobarColor "#46772d" "" . wrap "[" "]"
+            , ppTitle = xmobarColor "#46772d" "" . shorten 50
+            , ppUrgent = xmobarColor "#c4c4c4" "#880b32" . xmobarStrip
             }
           , modMask = mod4Mask
           , terminal = "urxvt"
-          , borderWidth = 2
-          , normalBorderColor = "#CCCCC6"
-          , focusedBorderColor = "#fd971f"
+          , borderWidth = 3
+          , normalBorderColor = "#c4c4c4"
+          , focusedBorderColor = "#880b32"
           , workspaces = myWorkspaces
           }`additionalKeys`
               [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
