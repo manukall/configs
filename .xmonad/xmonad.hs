@@ -7,14 +7,19 @@ import XMonad.Layout.ResizableTile
 import XMonad.Actions.CycleWS
 import XMonad.Actions.GridSelect
 import XMonad.Actions.WindowBringer
+import qualified XMonad.StackSet as W
 import System.IO
 
 myManageHook = composeAll
   [ className =? "Gimp"   --> doFloat
+    , className =? "Chromium" --> doF (W.shift "3:web")
+    , className =? "Lanikai" --> doShift "5:mail"
+    , className =? "Skype" --> doShift "4:skype"
+    , className =? "Xchat" --> doShift "9:chat"
   ]
 
 myLayout = ResizableTall 1 (3/100) (1/2) []
-myWorkspaces    = ["1:main","2:work","3:web","4:chat","5:mail", "6", "7", "8", "9"]
+myWorkspaces    = ["1:main","2:work","3:web","4:skype","5:mail", "6:media", "7", "8", "9:chat"]
 
 main = do
   xmproc <- spawnPipe "xmobar"
