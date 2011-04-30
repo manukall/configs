@@ -10,12 +10,18 @@ import XMonad.Layout.IM
 import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.ToggleLayouts
 import XMonad.Actions.CycleWS
 import XMonad.Actions.GridSelect
 import XMonad.Actions.WindowBringer
 import qualified XMonad.StackSet as W
 import XMonad.Layout.NoBorders
 import System.IO
+
+{-colors-}
+gray = "#c4c4c4"
+green = "#46772d"
+red = "#880b32"
 
 myManageHook = composeAll
   [ className =? "Gimp"   --> doFloat
@@ -35,7 +41,7 @@ tabbedConf = defaultTheme {
 
 genericLayouts = avoidStruts $
                  smartBorders $
-                 {-toggleLayouts (noBorders Full) $-}
+                 toggleLayouts (noBorders Full) $
                  Mirror tiled ||| tiled ||| tabbedLayout ||| (noBorders Full)
   where
       tiled = Tall 1 (3 / 100) (3 / 4)
@@ -54,15 +60,15 @@ main = do
           , layoutHook = myLayouts
           , logHook = dynamicLogWithPP $ xmobarPP
             { ppOutput = hPutStrLn xmproc
-            ,  ppCurrent = xmobarColor "#46772d" "" . wrap "[" "]"
-            , ppTitle = xmobarColor "#46772d" "" . shorten 50
-            , ppUrgent = xmobarColor "#c4c4c4" "#880b32" . xmobarStrip
+            ,  ppCurrent = xmobarColor green "" . wrap "[" "]"
+            , ppTitle = xmobarColor green "" . shorten 50
+            , ppUrgent = xmobarColor gray red . xmobarStrip
             }
           , modMask = mod4Mask
           , terminal = "urxvt"
           , borderWidth = 3
-          , normalBorderColor = "#c4c4c4"
-          , focusedBorderColor = "#880b32"
+          , normalBorderColor = gray
+          , focusedBorderColor = red
           , workspaces = myWorkspaces
           }`additionalKeys`
               [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
@@ -79,4 +85,6 @@ main = do
               , ((mod4Mask,               xK_g), goToSelected defaultGSConfig)
 
               , ((mod4Mask,               xK_w), gotoMenu)
+
+              , ((mod4Mask,               xK_f), sendMessage ToggleLayout)
               ]
