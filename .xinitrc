@@ -10,10 +10,11 @@ case $1 in
   wmii) rvm ruby-1.9.2-p0@wmii exec wmii ;;
   xmonad) 
     xsetroot -cursor_name left_ptr;
-    trayer --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 10 --widthtype request --transparent true --tint 0x191970 --height 12 &
+    trayer --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 10 --widthtype request --transparent true --tint 0x0 --height 12 &
     volwheel &
     setxkbmap de nodeadkeys;
     xrandr --output DP1 --mode 1920x1080 --left-of LVDS1 --primary;
+    feh --bg-center ~/.xmonad/wallpapers/xmonad.png;
     xmonad ;;
   *) exec $DEFAULT_SESSION ;;
 esac
