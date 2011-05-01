@@ -26,7 +26,7 @@ red = "#880b32"
 myManageHook = composeAll
   [ className =? "Gimp"   --> doFloat
     , className =? "Chromium" --> doF (W.shift "3:web")
-    , className =? "Lanikai" --> doShift "5:mail"
+    , className =? "Thunderbird" --> doShift "5:mail"
     , className =? "Skype" --> doShift "4:skype"
     , className =? "Xchat" --> doShift "9:chat"
   ]
