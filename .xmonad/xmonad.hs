@@ -29,6 +29,7 @@ myManageHook = composeAll
     , className =? "Thunderbird" --> doShift "5:mail"
     , className =? "Skype" --> doShift "4:skype"
     , className =? "Xchat" --> doShift "9:chat"
+    , className =? "Volwheel" --> doFloat
   ]
 
 myLayout = ResizableTall 1 (3/100) (1/2) []
