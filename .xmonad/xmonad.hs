@@ -3,6 +3,7 @@ import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
+import XMonad.Hooks.ManageHelpers
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Layout.ResizableTile
@@ -30,6 +31,8 @@ myManageHook = composeAll
     , className =? "Skype" --> doShift "4:skype"
     , className =? "Xchat" --> doShift "9:chat"
     , className =? "Volwheel" --> doFloat
+    , isDialog --> doFloat
+    , isFullscreen --> doFullFloat
   ]
 
 myLayout = ResizableTall 1 (3/100) (1/2) []
