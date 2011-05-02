@@ -31,6 +31,7 @@ myManageHook = composeAll
     , className =? "Skype" --> doShift "4:skype"
     , className =? "Xchat" --> doShift "9:chat"
     , className =? "Volwheel" --> doFloat
+    , className =? "Vlc" --> doFloat
     , isDialog --> doFloat
     , isFullscreen --> doFullFloat
   ]
