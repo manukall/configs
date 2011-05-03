@@ -27,6 +27,7 @@ red = "#880b32"
 myManageHook = composeAll
   [ className =? "Gimp"   --> doFloat
     , className =? "Chromium" --> doF (W.shift "3:web")
+    , className =? "Firefox" --> doF (W.shift "3:web")
     , className =? "Thunderbird" --> doShift "5:mail"
     , className =? "Skype" --> doShift "4:skype"
     , className =? "Xchat" --> doShift "9:chat"
@@ -52,6 +53,7 @@ genericLayouts = avoidStruts $
       tiled = Tall 1 (3 / 100) (3 / 4)
 
 myLayouts = onWorkspace "4:skype" imLayout $
+            onWorkspace "3:web" (avoidStruts tabbedLayout) $
             genericLayouts
 
 
