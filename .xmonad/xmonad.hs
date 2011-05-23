@@ -53,8 +53,10 @@ genericLayouts = avoidStruts $
       tiled = Tall 1 (3 / 100) (3 / 4)
 
 myLayouts = onWorkspace "4:skype" imLayout $
-            onWorkspace "3:web" (avoidStruts tabbedLayout) $
+            onWorkspace "3:web" (avoidStruts $ tabbedLayout ||| Mirror tiled ) $
             genericLayouts
+  where
+      tiled = Tall 1 (3 / 100) (3 / 4)
 
 
 myWorkspaces    = ["1:main","2:work","3:web","4:skype","5:mail", "6:media", "7", "8", "9:chat"]
