@@ -18,6 +18,11 @@ import XMonad.Actions.WindowBringer
 import qualified XMonad.StackSet as W
 import XMonad.Layout.NoBorders
 import System.IO
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ICCCMFocus
+import qualified XMonad.Prompt 		as P
+import XMonad.Prompt.Shell
+import XMonad.Prompt
 
 {-colors-}
 gray = "#c4c4c4"
@@ -61,24 +66,38 @@ myLayouts = onWorkspace "4:skype" imLayout $
 
 myWorkspaces    = ["1:main","2:work","3:web","4:skype","5:mail", "6:media", "7", "8", "9:chat"]
 
+-- some nice colors for the prompt windows to match the dzen status bar.
+myXPConfig = defaultXPConfig                                    
+    { 
+	font  = "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-u" 
+	,fgColor = gray
+	, bgColor = "#000000"
+	, bgHLight    = "#000000"
+	, fgHLight    = green
+	, position = Top
+    }
+
 main = do
   xmproc <- spawnPipe "xmobar"
   xmonad $ withUrgencyHook NoUrgencyHook
         $ defaultConfig
           { manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
           , layoutHook = myLayouts
-          , logHook = dynamicLogWithPP $ xmobarPP
-            { ppOutput = hPutStrLn xmproc
-            ,  ppCurrent = xmobarColor green "" . wrap "[" "]"
-            , ppTitle = xmobarColor green "" . shorten 50
-            , ppUrgent = xmobarColor gray red . xmobarStrip
-            }
+          , logHook = do
+            dynamicLogWithPP $ xmobarPP
+              { ppOutput = hPutStrLn xmproc
+              ,  ppCurrent = xmobarColor green "" . wrap "[" "]"
+              , ppTitle = xmobarColor green "" . shorten 50
+              , ppUrgent = xmobarColor gray red . xmobarStrip
+              }
+            takeTopFocus
           , modMask = mod4Mask
           , terminal = "urxvt"
           , borderWidth = 3
           , normalBorderColor = gray
           , focusedBorderColor = red
           , workspaces = myWorkspaces
+          , startupHook = setWMName "LG3D"
           }`additionalKeys`
               [ ((mod4Mask,               xK_a), sendMessage MirrorShrink)
               , ((mod4Mask,               xK_y), sendMessage MirrorExpand)
@@ -96,4 +115,5 @@ main = do
               , ((mod4Mask,               xK_w), gotoMenu)
 
               , ((mod4Mask,               xK_f), sendMessage ToggleLayout)
+              , ((mod4Mask,               xK_p), shellPrompt myXPConfig)
               ]
