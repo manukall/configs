@@ -1,5 +1,8 @@
 import Data.Ratio ((%))
 import XMonad
+import qualified XMonad.Actions.DynamicWorkspaces as DW
+import qualified XMonad.Actions.WithAll as WithAll
+import qualified XMonad.Actions.TopicSpace as TS
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
@@ -12,6 +15,7 @@ import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.ToggleLayouts
+import qualified XMonad.Layout.WorkspaceDir as WD
 import XMonad.Actions.CycleWS
 import XMonad.Actions.GridSelect
 import XMonad.Actions.WindowBringer
@@ -21,8 +25,11 @@ import System.IO
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ICCCMFocus
 import qualified XMonad.Prompt 		as P
+import qualified XMonad.Prompt.Input as PI
 import XMonad.Prompt.Shell
 import XMonad.Prompt
+
+import qualified Data.Map as M
 
 {-colors-}
 gray = "#c4c4c4"
@@ -77,6 +84,36 @@ myXPConfig = defaultXPConfig
 	, position = Top
     }
 
+_spaces = M.fromList $
+          [ ("schutbord", "~")
+          , ("browsen", "~")
+          , ("praten", "~")
+          , ("muziek", "~/Muziek")
+          , ("berichten", "~/Mail")
+          , ("agenda", "~/Documenten/Day Planner")
+          , ("ldap", "~")
+          , ("flim", "~")
+          , ("terminals", "~")
+          ]
+
+_topicActions = M.fromList $
+                [
+                ]
+
+_topicConfig = TS.TopicConfig {
+                 TS.topicDirs = _spaces
+               , TS.topicActions = _topicActions
+               , TS.defaultTopicAction = (const $ return ())
+               , TS.defaultTopic = "schutbord"
+               , TS.maxTopicHistory = 10
+               }
+
+-- creates the workspace if needed
+goto :: TS.Topic -> X ()
+goto t = newWorkspace t >> TS.switchTopic _topicConfig t
+ 
+shift = windows . W.shift
+
 main = do
   xmproc <- spawnPipe "xmobar"
   xmonad $ withUrgencyHook NoUrgencyHook
@@ -116,4 +153,27 @@ main = do
 
               , ((mod4Mask,               xK_f), sendMessage ToggleLayout)
               , ((mod4Mask,               xK_p), shellPrompt myXPConfig)
+              , ((mod4Mask .|. shiftMask, xK_n), PI.inputPrompt P.defaultXPConfig "New Workspace:" PI.?+ newWorkspaceDir)
+              , ((mod4Mask .|. shiftMask, xK_BackSpace), WithAll.killAll >> DW.removeWorkspace) --buggy, messes with focus and creates flicker, needs to be fixed
+              , ((mod4Mask .|. shiftMask, xK_r), DW.renameWorkspace P.defaultXPConfig)
               ]
+
+newWorkspace :: WorkspaceId -> X ()
+newWorkspace w = do exists <- widExist w
+                    if (not exists) then DW.addHiddenWorkspace w else return ()
+ 
+newWorkspaceDir :: WorkspaceId -> X ()
+newWorkspaceDir w = do exists <- widExist w
+                       if (not exists)
+                           then do DW.addHiddenWorkspace w
+                                   goto w
+                                   WD.changeDir P.defaultXPConfig
+                           else return ()
+ 
+widExist :: WorkspaceId -> X Bool
+widExist wid = do xs <- get
+                  return $ widExists wid ( windowset xs )
+ 
+widExists :: WorkspaceId -> W.StackSet WorkspaceId l a s sd -> Bool
+widExists wid ws = wid `elem` map W.tag  (W.workspaces ws)
+ 
