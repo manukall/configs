@@ -4,10 +4,10 @@ xrdb -load ~/.Xresources
 
 urxvt &
 
-DEFAULT_SESSION=awesome
+DEFAULT_SESSION=xmonad
 case $1 in
-  awesome) exec awesome ;;
-  wmii) rvm ruby-1.9.2-p0@wmii exec wmii ;;
+#  awesome) exec awesome ;;
+#  wmii) rvm ruby-1.9.2-p0@wmii exec wmii ;;
   xmonad) 
     xsetroot -cursor_name left_ptr;
     trayer --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 10 --widthtype request --transparent true --tint 0x0 --height 12 &

@@ -1,0 +1,4 @@
+
+xmonad.hs:29:8:
+    Could not find module `XMonad.Prompt':
+      Use -v to see a list of the files searched for.

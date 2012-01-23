@@ -2,7 +2,6 @@ import Data.Ratio ((%))
 import XMonad
 import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Actions.WithAll as WithAll
-import qualified XMonad.Actions.TopicSpace as TS
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
@@ -83,36 +82,21 @@ myXPConfig = defaultXPConfig
 	, fgHLight    = green
 	, position = Top
     }
-
-_spaces = M.fromList $
-          [ ("schutbord", "~")
-          , ("browsen", "~")
-          , ("praten", "~")
-          , ("muziek", "~/Muziek")
-          , ("berichten", "~/Mail")
-          , ("agenda", "~/Documenten/Day Planner")
-          , ("ldap", "~")
-          , ("flim", "~")
-          , ("terminals", "~")
-          ]
-
-_topicActions = M.fromList $
-                [
-                ]
-
-_topicConfig = TS.TopicConfig {
-                 TS.topicDirs = _spaces
-               , TS.topicActions = _topicActions
-               , TS.defaultTopicAction = (const $ return ())
-               , TS.defaultTopic = "schutbord"
-               , TS.maxTopicHistory = 10
-               }
-
--- creates the workspace if needed
-goto :: TS.Topic -> X ()
-goto t = newWorkspace t >> TS.switchTopic _topicConfig t
  
 shift = windows . W.shift
+
+manuPP :: PP
+manuPP = xmobarPP
+              { 
+                ppCurrent = xmobarColor green "" . wrap "[" "]"
+              , ppTitle = xmobarColor green "" . shorten 50
+              , ppUrgent = xmobarColor gray red . xmobarStrip
+              , ppHiddenNoWindows = showNamedWorkspaces
+              }
+  where showNamedWorkspaces wsId = if any (`elem` wsId) ['a'..'z']
+                           then pad wsId
+                           else ""
+
 
 main = do
   xmproc <- spawnPipe "xmobar"
@@ -121,11 +105,8 @@ main = do
           { manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
           , layoutHook = myLayouts
           , logHook = do
-            dynamicLogWithPP $ xmobarPP
+            dynamicLogWithPP $ manuPP 
               { ppOutput = hPutStrLn xmproc
-              ,  ppCurrent = xmobarColor green "" . wrap "[" "]"
-              , ppTitle = xmobarColor green "" . shorten 50
-              , ppUrgent = xmobarColor gray red . xmobarStrip
               }
             takeTopFocus
           , modMask = mod4Mask
@@ -153,22 +134,14 @@ main = do
 
               , ((mod4Mask,               xK_f), sendMessage ToggleLayout)
               , ((mod4Mask,               xK_p), shellPrompt myXPConfig)
-              , ((mod4Mask .|. shiftMask, xK_n), PI.inputPrompt P.defaultXPConfig "New Workspace:" PI.?+ newWorkspaceDir)
+              , ((mod4Mask .|. shiftMask, xK_n), PI.inputPrompt P.defaultXPConfig "New Workspace:" PI.?+ newWorkspace)
               , ((mod4Mask .|. shiftMask, xK_BackSpace), WithAll.killAll >> DW.removeWorkspace) --buggy, messes with focus and creates flicker, needs to be fixed
               , ((mod4Mask .|. shiftMask, xK_r), DW.renameWorkspace P.defaultXPConfig)
               ]
 
 newWorkspace :: WorkspaceId -> X ()
 newWorkspace w = do exists <- widExist w
-                    if (not exists) then DW.addHiddenWorkspace w else return ()
- 
-newWorkspaceDir :: WorkspaceId -> X ()
-newWorkspaceDir w = do exists <- widExist w
-                       if (not exists)
-                           then do DW.addHiddenWorkspace w
-                                   goto w
-                                   WD.changeDir P.defaultXPConfig
-                           else return ()
+                    if (not exists) then DW.addWorkspace w else return ()
  
 widExist :: WorkspaceId -> X Bool
 widExist wid = do xs <- get
